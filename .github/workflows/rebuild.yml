@@ -1,0 +1,53 @@
+name: rebuild
+
+on:
+  workflow_dispatch:
+    inputs:
+      COMMIT_SHA:
+        description: 'Commit SHA to be build'
+        required: true
+      REPO:
+        description: 'Repo'
+        required: true
+      COMMAND:
+        description: 'Build command'
+        required: true
+      GO_VERSION:
+        description: 'Go version'
+        required: true
+      OUTPUT_FILE:
+        description: 'Output file'
+        required: true
+      EXPECTED_CHECKSUM:
+        description: 'Expected checksum'
+        required: true
+
+permissions: read-all
+
+jobs:
+  rebuild:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5
+      with:
+        repository: ${{ github.event.inputs.REPO }}
+        ref: ${{ github.event.inputs.COMMIT_SHA }}
+         
+    
+    - name: Set up Go 
+      uses: actions/setup-go@424fc82d43fa5a37540bae62709ddcc23d9520d4
+      with:
+        go-version: ${{ github.event.inputs.GO_VERSION }}
+        
+    - run: ${{ github.event.inputs.COMMAND }}
+    - run: | 
+        sha=($(shasum -a256 ${{ github.event.inputs.OUTPUT_FILE }}))
+        echo $sha
+        if [[ "$sha" != "${{ github.event.inputs.EXPECTED_CHECKSUM }}" ]]
+        then
+          echo "Checksum not as expected"
+          exit 1
+        fi
