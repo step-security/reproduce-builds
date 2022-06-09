@@ -1,4 +1,4 @@
-name: rebuild-${{ github.event.inputs.CORRELATION_ID }}
+name: rebuild
 
 on:
   workflow_dispatch:
@@ -29,6 +29,7 @@ permissions: read-all
 
 jobs:
   rebuild:
+    name: rebuild-${{ github.event.inputs.CORRELATION_ID }}
     permissions:
       contents: read
     runs-on: ubuntu-latest
