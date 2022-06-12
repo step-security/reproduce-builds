@@ -1,4 +1,5 @@
 # reproduce-builds
+[![build-reproducer](images/banner.png)](#)
 [StepSecurity Release Monitor](https://blog.stepsecurity.io/introducing-stepsecurity-release-monitor-517ed10623a1) uses this repository to programatically reproduce builds for different open source projects. As of now, it has been setup to rebuild software written in the Go Programming Language. 
 
 The `rebuild.yml` workflow takes the following inputs. It then downloads the source code, builds the code, and compares the checksum with the expected checksum. If the checksum matches, the workflow passes, else it fails. The expected checksum comes from the release artifacts of the software being rebuilt. 
