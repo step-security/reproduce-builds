@@ -25,6 +25,9 @@ on:
         description: 'Expected checksum of output binary file'
         required: true
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
   rebuild:
     name: rebuild-${{ github.event.inputs.CORRELATION_ID }}
@@ -32,6 +35,11 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@ebacdc22ef6c2cfb85ee5ded8f2e640f4c776dd5 # v2.0.0
+      with:
+        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+
     - name: Checkout
       uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5
       with:
@@ -40,7 +48,7 @@ jobs:
          
     
     - name: Set up Go 
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # v2.2.0
       with:
         go-version: ${{ github.event.inputs.GO_VERSION }}
         
